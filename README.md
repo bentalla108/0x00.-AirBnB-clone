@@ -50,3 +50,4 @@ We strongly encourage you to work together on test cases, so that you don’t mi
 ## Authors
 
 * Mahamadou Kheraba Diaby
+* Mor Talla Mbaye
