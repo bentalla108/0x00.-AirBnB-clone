@@ -1,41 +1,53 @@
 #!/usr/bin/python3
+""" Module for Base """
+
 import uuid
 from datetime import datetime
-from models import storage
-"Base Model "
+from uuid import uuid4
+import models
+import json
+
+format_dt = "%Y-%m-%dT%H:%M:%S.%f"
 
 
-class BaseModel():
-    """BaseModel class definies"""
-    def __init__(self,  *args , **kwargs):
-
-        if kwargs and kwargs is not None:
-            for key , value in kwargs.items():
-                if key == 'created_at' or key == 'updated_at':
-                    value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
-                if key != '__class__':
-                    setattr(self, key, value)
+class BaseModel:
+    """ Basemodel class """
+    def __init__(self, *args, **kwargs):
+        """ Initialization of Database """
+        if args is not None and len(args) > 0:
+            pass
+        if kwargs:
+            for key, item in kwargs.items():
+                if key in ['created_at', 'updated_at']:
+                    item = datetime.strptime(item, format_dt)
+                if key not in ['__class__']:
+                    setattr(self, key, item)
         else:
             self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-
-    def __str__ (self):
-        """ Strings representation of a class"""
-        return "[{}] ({}) {}".format(type(self).__name__,
-                                     self.id, self.__dict__)
-
-    def save(self):
-        """Updates updated_at with current datetime"""
-        self.updated_at = datetime.now()
-        storage.save()
+            self.created_at = self.updated_at = datetime.now()
+            models.storage.new(self)
 
     def to_dict(self):
-        """Return a dictionnary of all keys and value of __dict___"""
+        """ to_dict definition """
+        
+        dic = {}
+        for key, item in self.__dict__.items():
+            if key in ['created_at', 'updated_at']:
+                dic[key] = item
 
-        selfDict = self.__dict__.copy()
-        selfDict ['__class__'] = self.__class__.__name__
-        selfDict ['created_at'] = self.created_at.isoformat()
-        selfDict ['updated_at'] = self.updated_at.isoformat()
+        dic['__class__'] = self.__class__.__name__
+        dic['created_at'] = self.created_at.isoformat()
+        dic['updated_at'] = self.updated_at.isoformat()
+        return dic
 
-        return selfDict
+
+    def __str__(self):
+        """ str definition """
+        return("[{}] ({}) {}".format(self.__class__.__name__,
+                                     self.id, self.__dict__))
+
+    def save(self):
+        """ Save definition """
+        self.updated_at = datetime.now()
+        models.storage.new(self)
+        models.storage.save()
