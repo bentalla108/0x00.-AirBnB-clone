@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import uuid
 from datetime import datetime
+from models import storage
 "Base Model "
 
 
@@ -25,8 +26,9 @@ class BaseModel():
                                      self.id, self.__dict__)
 
     def save(self):
-        """Update publics instance attribute update_at"""
+        """Updates updated_at with current datetime"""
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """Return a dictionnary of all keys and value of __dict___"""
