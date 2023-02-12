@@ -7,10 +7,10 @@ from models import storage
 
 class BaseModel():
     """BaseModel class definies"""
-    def __init__(self,  *args , **kwargs):
+    def __init__(self, *args, **kwargs):
 
         if kwargs and kwargs is not None:
-            for key , value in kwargs.items():
+            for key, value in kwargs.items():
                 if key == 'created_at' or key == 'updated_at':
                     value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
                 if key != '__class__':
@@ -20,7 +20,7 @@ class BaseModel():
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
 
-    def __str__ (self):
+    def __str__(self):
         """ Strings representation of a class"""
         return "[{}] ({}) {}".format(type(self).__name__,
                                      self.id, self.__dict__)
@@ -34,8 +34,8 @@ class BaseModel():
         """Return a dictionnary of all keys and value of __dict___"""
 
         selfDict = self.__dict__.copy()
-        selfDict ['__class__'] = self.__class__.__name__
-        selfDict ['created_at'] = self.created_at.isoformat()
-        selfDict ['updated_at'] = self.updated_at.isoformat()
+        selfDict['__class__'] = self.__class__.__name__
+        selfDict['created_at'] = self.created_at.isoformat()
+        selfDict['updated_at'] = self.updated_at.isoformat()
 
         return selfDict
